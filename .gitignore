@@ -134,6 +134,3 @@ dmypy.json
 ckpts
 datasets
 .vscode
-
-# custom files
-*.ipynb
