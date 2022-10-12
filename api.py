@@ -54,6 +54,7 @@ def get_model(model_name, dataset_name):
     learning_rate = train_config["learning_rate"]
     optimizer = train_config["optimizer"]  # can be [sgd, adam]
     seq_len = train_config["seq_len"]
+    metric = train_config["metric"]
 
     if dataset_name == "ASSIST2009":
         dataset = ASSIST2009(seq_len)
@@ -133,7 +134,7 @@ def get_model(model_name, dataset_name):
 
     aucs, loss_means = \
         model.train_model(
-            train_loader, test_loader, num_epochs, opt, ckpt_path
+            train_loader, test_loader, num_epochs, opt, ckpt_path, metric
         )
 
     with open(os.path.join(ckpt_path, "aucs.pkl"), "wb") as f:

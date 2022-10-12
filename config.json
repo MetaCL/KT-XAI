@@ -1,11 +1,12 @@
 {
     "train_config": {
         "batch_size": 512,
-        "num_epochs": 3,
-        "train_ratio": 0.9,
-        "learning_rate": 0.001,
+        "num_epochs": 10,
+        "train_ratio": 0.6,
+        "learning_rate": 0.005,
         "optimizer": "adam",
-        "seq_len": 100
+        "seq_len": 100,
+        "metric": "auc"
     },
     "dkt": {
         "emb_size": 100,

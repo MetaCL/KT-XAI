@@ -42,12 +42,13 @@ class DKT(Module):
         h, _ = self.lstm_layer(self.interaction_emb(x))
         y = self.out_layer(h)
         y = self.dropout_layer(y)
-        y = torch.sigmoid(y)
+        T = 1
+        y = torch.sigmoid(y/T)
 
         return y
 
     def train_model(
-        self, train_loader, test_loader, num_epochs, opt, ckpt_path
+        self, train_loader, test_loader, num_epochs, opt, ckpt_path, metric = "auc"
     ):
         '''
             Args:
@@ -61,6 +62,8 @@ class DKT(Module):
         loss_means = []
 
         max_auc = 0
+
+        metric_str = metric.upper()
 
         for i in range(1, num_epochs + 1):
             loss_mean = []
@@ -95,15 +98,30 @@ class DKT(Module):
                     y = torch.masked_select(y, m).detach().cpu()
                     t = torch.masked_select(rshft, m).detach().cpu()
 
-                    auc = metrics.roc_auc_score(
-                        y_true=t.numpy(), y_score=y.numpy()
-                    )
+                    loss_test = binary_cross_entropy(y, t)
 
-                    loss_mean = np.mean(loss_mean)
+                    auc = 0
+                    if metric == "auc" :
+                        auc = metrics.roc_auc_score(
+                            y_true=t.numpy(), y_score=y.numpy()
+                        )
+                    elif metric == "bri" :
+                        auc = metrics.brier_score_loss(
+                            y_true=t.numpy(), y_prob=y.numpy()
+                        )
+                        # Brier score works the other way around (0 means good, 1 means bad). We flip it
+                        auc = 1-auc
+                    elif metric == "acc" :
+                        auc = metrics.accuracy_score(
+                            y_true=t.numpy(), y_pred=round(y.numpy())
+                        )        
+
+                    #loss_mean = np.mean(loss_mean)
+                    loss_mean= loss_mean[-1]
 
                     print(
-                        "Epoch: {},   AUC: {},   Loss Mean: {}"
-                        .format(i, auc, loss_mean)
+                        "Epoch: {},   Loss train: {},   {}: {},   Loss test: {}"
+                        .format(i, loss_mean, metric_str, auc, loss_test)
                     )
 
                     if auc > max_auc:
