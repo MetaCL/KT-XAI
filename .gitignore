@@ -130,7 +130,6 @@ dmypy.json
 
 # custom directories
 .ckpts
-.datasets
 ckpts
-datasets
 .vscode
+*.pkl
