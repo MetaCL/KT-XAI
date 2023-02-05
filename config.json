@@ -1,7 +1,7 @@
 {
     "train_config": {
         "batch_size": 512,
-        "num_epochs": 10,
+        "num_epochs": 3,
         "train_ratio": 0.6,
         "learning_rate": 0.005,
         "optimizer": "adam",

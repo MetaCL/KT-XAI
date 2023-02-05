@@ -146,12 +146,17 @@ def get_model(model_name, dataset_name):
 def generate_seq(model, input_seq, answer_seq, ini = 1, method = "ran") :
     ini = ini-1
     model.eval()
+    # reduce the length of the answer tensor to be the same as the input length
+    # This line could be improved, anyways :)
     rec_answer_seq = answer_seq[0:len(input_seq)]
     likelihood = 1
     for i in range(ini, len(input_seq)-1) :
-        output = model(torch.tensor(input_seq[ini:i+1]), torch.tensor(rec_answer_seq[ini:i+1]))
+        output = model(torch.tensor(input_seq[0:i+1]), torch.tensor(rec_answer_seq[0:i+1]))
         #print(float(output[-1][input_seq[i+1]]))
         if (method == "max") :
+            #print(input_seq[i+1])
+            #print(len(rec_answer_seq))
+            #print(len(output[-1]))
             rec_answer_seq[i+1] = round(float(output[-1][input_seq[i+1]]))
             likelihood = likelihood * max(float(output[-1][input_seq[i+1]]),1-float(output[-1][input_seq[i+1]]))
         elif (method == "ran") :
