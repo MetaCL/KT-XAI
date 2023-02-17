@@ -1,9 +1,9 @@
 {
     "train_config": {
-        "batch_size": 512,
-        "num_epochs": 3,
+        "batch_size": 256,
+        "num_epochs": 100,
         "train_ratio": 0.6,
-        "learning_rate": 0.005,
+        "learning_rate": 0.001,
         "optimizer": "adam",
         "seq_len": 100,
         "metric": "auc"
